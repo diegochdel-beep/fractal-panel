@@ -11,119 +11,108 @@
 
   <style>
     :root{
-      --bg:#05080a; --side:#0a1219;
-      --neon:#39ff14; --cyan:#00d4ff;
-      --text:#e0e6ed; --muted:#8fa0b3;
-      --line:rgba(0,212,255,.18);
+      --bg:#05080a; --side:#0a1219; --neon:#39ff14; --cyan:#00d4ff;
+      --text:#e0e6ed; --muted:#8fa0b3; --line:rgba(0,212,255,.18);
       --card:rgba(255,255,255,.03);
     }
-    *{box-sizing:border-box}
-    html,body{height:100%}
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; }
     body{
       margin:0; background:var(--bg); color:var(--text);
       font-family:Roboto,system-ui,-apple-system,Segoe UI,Arial,sans-serif;
       overflow:hidden;
     }
-    .wrap{display:flex; height:100vh; border:1px solid rgba(255,255,255,.06); border-radius:14px; overflow:hidden}
+
+    .wrap{ height:100vh; display:flex; border:1px solid rgba(0,212,255,.12); border-radius:14px; overflow:hidden; }
     .side{
-      width:320px; background:linear-gradient(180deg,#071018,#05080a);
-      border-right:1px solid rgba(255,255,255,.06);
-      padding:18px 16px; overflow:auto;
+      width:320px; background:linear-gradient(180deg,var(--side),rgba(0,0,0,.9));
+      border-right:1px solid rgba(0,212,255,.12); padding:18px; overflow:auto;
     }
-    .brand{
-      border:1px solid rgba(57,255,20,.18);
-      background:radial-gradient(120% 120% at 10% 10%, rgba(57,255,20,.10), transparent 50%),
-                 radial-gradient(120% 120% at 90% 10%, rgba(0,212,255,.10), transparent 55%),
-                 rgba(255,255,255,.02);
-      border-radius:14px; padding:14px 12px; margin-bottom:14px;
-      box-shadow:0 0 0 1px rgba(0,0,0,.2) inset;
+    .brand{ text-align:center; padding:10px 10px 14px; border-bottom:1px solid rgba(0,212,255,.10); margin-bottom:14px; }
+    .title{ font-family:Orbitron; color:var(--neon); font-size:20px; letter-spacing:1px; }
+    .sub{ color:var(--muted); font-size:11px; margin-top:4px; }
+
+    .card{
+      background:var(--card); border:1px solid rgba(0,212,255,.12);
+      border-radius:14px; padding:12px; margin:12px 0;
+      box-shadow:0 10px 30px rgba(0,0,0,.35);
     }
-    .title{
-      font-family:Orbitron,system-ui; letter-spacing:.12em;
-      color:var(--neon); font-size:18px; text-align:center;
-      text-shadow:0 0 18px rgba(57,255,20,.25);
+    .h3{ font-family:Orbitron; font-size:11px; color:var(--cyan); margin:0 0 10px; letter-spacing:.8px; }
+
+    .grid2{ display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+    button{
+      appearance:none; border-radius:10px; cursor:pointer; user-select:none;
+      font-family:Orbitron; font-size:10px; letter-spacing:.7px;
+      padding:11px 10px; background:rgba(0,0,0,.35);
+      border:1px solid rgba(0,212,255,.22); color:var(--text);
+      transition:.18s transform, .18s background, .18s border-color;
     }
-    .sub{font-size:11px; text-align:center; color:rgba(224,230,237,.6); margin-top:6px}
-    .block{
-      margin:12px 0; padding:12px;
-      background:linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.01));
-      border:1px solid rgba(255,255,255,.06);
-      border-radius:14px;
-    }
-    h3{
-      margin:0 0 10px; font-family:Orbitron,system-ui;
-      font-size:11px; letter-spacing:.12em; color:rgba(0,212,255,.95);
-    }
-    .grid2{display:grid; grid-template-columns:1fr 1fr; gap:8px}
-    .btn{
-      width:100%; padding:10px 10px; border-radius:10px;
-      font-family:Orbitron,system-ui; font-size:10px; letter-spacing:.08em;
-      cursor:pointer; transition:.18s ease;
-      border:1px solid rgba(255,255,255,.10);
-      background:rgba(0,0,0,.35); color:var(--text);
-    }
-    .btn:hover{transform:translateY(-1px)}
-    .btn.neon{border-color:rgba(57,255,20,.55); color:var(--neon)}
-    .btn.neon:hover{background:rgba(57,255,20,.12)}
-    .btn.cyan{border-color:rgba(0,212,255,.55); color:rgba(0,212,255,.95)}
-    .btn.cyan:hover{background:rgba(0,212,255,.10)}
-    .btn.mag{border-color:rgba(255,0,255,.55); color:rgba(255,0,255,.95)}
-    .btn.mag:hover{background:rgba(255,0,255,.08)}
-    .notes{
-      width:100%; height:70px; resize:none;
-      background:rgba(0,0,0,.45); color:var(--text);
-      border:1px solid rgba(0,212,255,.35);
-      border-radius:10px; padding:10px; font-size:12px;
+    button:hover{ transform:translateY(-1px); border-color:rgba(57,255,20,.55); }
+    .neon{ border-color:rgba(57,255,20,.55); color:var(--neon); }
+    .neon:hover{ background:rgba(57,255,20,.12); }
+    .mag{ border-color:rgba(255,0,255,.5); color:#ff5cff; }
+    .mag:hover{ background:rgba(255,0,255,.10); }
+
+    .note{
+      width:100%; height:70px; resize:vertical; min-height:70px;
+      background:rgba(0,0,0,.55); border:1px solid rgba(0,212,255,.35);
+      color:var(--text); border-radius:12px; padding:10px; font-size:12px;
       outline:none;
     }
+
     .log{
-      height:120px; overflow:auto; font-size:11px; line-height:1.35;
-      border:1px solid rgba(255,255,255,.08);
+      height:120px; overflow:auto; font-size:11px; color:var(--muted);
+      border:1px solid rgba(0,212,255,.12); border-radius:12px; padding:10px;
       background:rgba(0,0,0,.35);
-      border-radius:12px; padding:10px;
     }
-    .pillrow{display:flex; gap:8px; flex-wrap:wrap; margin-top:8px}
+    .pillrow{ display:flex; gap:8px; flex-wrap:wrap; }
     .pill{
-      display:inline-flex; align-items:center; gap:6px;
-      padding:6px 10px; border-radius:999px;
-      border:1px solid rgba(255,255,255,.10);
-      background:rgba(0,0,0,.35);
-      font-size:11px; color:rgba(224,230,237,.75);
-      font-family:Orbitron,system-ui;
+      font-size:11px; padding:7px 10px; border-radius:999px;
+      border:1px solid rgba(0,212,255,.18); background:rgba(0,0,0,.35);
+      color:var(--muted); display:inline-flex; align-items:center; gap:8px;
+      font-family:Roboto;
     }
-    .dot{width:8px; height:8px; border-radius:50%; background:#666}
-    .dot.ok{background:var(--neon); box-shadow:0 0 12px rgba(57,255,20,.35)}
-    .main{flex:1; position:relative; background:#000}
-    #canvas3d{position:absolute; inset:0}
-    .rxOverlay{
-      position:absolute; inset:0; display:none;
-      background:rgba(0,0,0,.92);
-      z-index:50; align-items:center; justify-content:center;
-      padding:18px;
+    .dot{ width:8px; height:8px; border-radius:50%; background:#888; }
+    .ok{ background:var(--neon); }
+    .cy{ background:var(--cyan); }
+
+    .main{ flex:1; position:relative; min-width:0; }
+    #viewer{ position:absolute; inset:0; }
+    .topbar{
+      position:absolute; top:10px; left:10px; right:10px; z-index:10;
+      display:flex; justify-content:space-between; gap:10px; pointer-events:none;
     }
-    .rxBox{
-      max-width:min(1100px,96vw);
-      max-height:88vh;
-      border:1px solid rgba(0,212,255,.45);
-      border-radius:14px;
-      overflow:hidden;
-      background:rgba(0,0,0,.35);
-      position:relative;
+    .badge{
+      pointer-events:none;
+      display:inline-flex; align-items:center; gap:10px;
+      padding:10px 12px; border-radius:14px;
+      background:rgba(0,0,0,.55);
+      border:1px solid rgba(0,212,255,.14);
+      backdrop-filter: blur(8px);
+      font-family:Orbitron; font-size:10px; color:var(--muted);
     }
-    .rxBox img{display:block; max-width:96vw; max-height:88vh}
-    .rxClose{
-      position:absolute; top:10px; right:10px;
-      border:1px solid rgba(57,255,20,.55);
-      color:var(--neon); background:rgba(0,0,0,.55);
-      padding:8px 10px; border-radius:10px; cursor:pointer;
-      font-family:Orbitron,system-ui; font-size:10px;
+    .badge b{ color:var(--text); font-weight:700; }
+
+    /* RX overlay */
+    #rxOv{
+      position:absolute; inset:0; display:none; align-items:center; justify-content:center;
+      background:rgba(0,0,0,.90); z-index:50;
     }
+    #rxBox{ position:relative; max-width:92%; max-height:92%; }
+    #rxImg{ max-width:100%; max-height:90vh; border:2px solid var(--cyan); border-radius:12px; }
+    #rxClose{
+      position:absolute; top:-38px; right:0;
+      background:transparent; border:0; color:var(--neon);
+      font-family:Orbitron; font-size:11px; cursor:pointer;
+      padding:6px 10px;
+    }
+
     @media (max-width: 900px){
-      body{overflow:auto}
-      .wrap{flex-direction:column; height:auto; min-height:100vh}
-      .side{width:100%}
-      .main{height:70vh; min-height:520px}
-      #canvas3d{position:relative; height:70vh}
+      body{ overflow:auto; }
+      .wrap{ height:auto; min-height:100vh; flex-direction:column; border-radius:0; }
+      .side{ width:100%; }
+      .main{ height:70vh; }
+      #viewer{ position:relative; height:70vh; }
     }
   </style>
 </head>
@@ -134,56 +123,63 @@
       <div class="brand">
         <div class="title">FRACTAL LABS</div>
         <div class="sub">Dental Intelligence Panel — WebGL</div>
+      </div>
+
+      <div class="card">
         <div class="pillrow">
-          <span class="pill"><span class="dot" id="dotWebgl"></span> WEBGL</span>
+          <span class="pill"><span class="dot ok" id="dotWebgl"></span> WEBGL</span>
           <span class="pill"><span class="dot" id="dotMax"></span> MAX</span>
           <span class="pill"><span class="dot" id="dotMan"></span> MAN</span>
           <span class="pill"><span class="dot" id="dotRx"></span> RX</span>
         </div>
       </div>
 
-      <div class="block">
-        <h3>1) MODELOS STL</h3>
+      <div class="card">
+        <div class="h3">1) MODELOS STL</div>
         <div class="grid2">
-          <button class="btn cyan" id="btnMax">MAXILA</button>
-          <button class="btn cyan" id="btnMan">MANDÍBULA</button>
+          <button id="btnMax">MAXILA</button>
+          <button id="btnMan">MANDÍBULA</button>
         </div>
-        <input id="inMax" type="file" accept=".stl" hidden>
-        <input id="inMan" type="file" accept=".stl" hidden>
+        <button class="neon" id="btnSim" style="margin-top:10px;">SIMULAR EXPANSIÓN</button>
+        <button id="btnFit" style="margin-top:8px;">ENFOCAR / FIT VIEW</button>
+        <button id="btnReset" style="margin-top:8px;">RESET 3D</button>
 
-        <button class="btn neon" id="btnSim" style="margin-top:10px">SIMULAR EXPANSIÓN</button>
-        <button class="btn" id="btnFit" style="margin-top:8px">ENFOCAR / FIT VIEW</button>
-        <button class="btn" id="btnReset" style="margin-top:8px">RESET 3D</button>
+        <input id="inMax" type="file" accept=".stl" hidden />
+        <input id="inMan" type="file" accept=".stl" hidden />
       </div>
 
-      <div class="block">
-        <h3>2) RX</h3>
+      <div class="card">
+        <div class="h3">2) RX</div>
         <div class="grid2">
-          <button class="btn cyan" id="btnRx">SUBIR RX</button>
-          <button class="btn neon" id="btnOpenRx">ABRIR OVERLAY</button>
+          <button id="btnRx">SUBIR RX</button>
+          <button class="neon" id="btnRxOpen">ABRIR OVERLAY</button>
         </div>
-        <input id="inRx" type="file" accept="image/*" hidden>
+        <input id="inRx" type="file" accept="image/*" hidden />
       </div>
 
-      <div class="block">
-        <h3>NOTAS</h3>
-        <textarea class="notes" id="notes" placeholder="Notas del caso..."></textarea>
-        <button class="btn mag" id="btnSend" style="margin-top:10px">ENVIAR A PRODUCCIÓN</button>
+      <div class="card">
+        <div class="h3">NOTAS</div>
+        <textarea class="note" id="notes" placeholder="Notas del caso..."></textarea>
+        <button class="mag" id="btnSend" style="margin-top:10px;">ENVIAR A PRODUCCIÓN</button>
       </div>
 
-      <div class="block">
-        <h3>LOG</h3>
+      <div class="card">
+        <div class="h3">LOG</div>
         <div class="log" id="log"></div>
       </div>
     </aside>
 
     <main class="main">
-      <div id="canvas3d"></div>
+      <div class="topbar">
+        <div class="badge"><b>3D PANEL</b> • rotar/zoom con mouse • pan: shift</div>
+        <div class="badge">Fractal Labs</div>
+      </div>
+      <div id="viewer"></div>
 
-      <div class="rxOverlay" id="rxOverlay">
-        <div class="rxBox">
-          <button class="rxClose" id="rxClose">CERRAR (ESC)</button>
-          <img id="rxImg" alt="RX">
+      <div id="rxOv">
+        <div id="rxBox">
+          <img id="rxImg" alt="RX" />
+          <button id="rxClose">CERRAR (ESC)</button>
         </div>
       </div>
     </main>
@@ -196,217 +192,250 @@
 
     const $ = (id) => document.getElementById(id);
 
-    const logBox = $("log");
-    function log(msg, color="rgba(224,230,237,.8)"){
+    const logEl = $("log");
+    const log = (msg, color="#8fa0b3") => {
       const d = document.createElement("div");
       d.textContent = msg;
       d.style.color = color;
-      logBox.appendChild(d);
-      logBox.scrollTop = logBox.scrollHeight;
-    }
+      logEl.appendChild(d);
+      logEl.scrollTop = logEl.scrollHeight;
+    };
 
+    // UI refs
     const dotWebgl = $("dotWebgl");
     const dotMax = $("dotMax");
     const dotMan = $("dotMan");
     const dotRx  = $("dotRx");
 
-    // ====== THREE SETUP ======
-    const host = $("canvas3d");
+    const btnMax = $("btnMax");
+    const btnMan = $("btnMan");
+    const btnSim = $("btnSim");
+    const btnFit = $("btnFit");
+    const btnReset = $("btnReset");
+    const btnRx = $("btnRx");
+    const btnRxOpen = $("btnRxOpen");
+    const btnSend = $("btnSend");
+
+    const inMax = $("inMax");
+    const inMan = $("inMan");
+    const inRx  = $("inRx");
+
+    const rxOv = $("rxOv");
+    const rxImg = $("rxImg");
+    const rxClose = $("rxClose");
+
+    // Basic sanity
+    dotWebgl.classList.add("ok");
+    log("WEBGL OK", "#39ff14");
+
+    // Scene
+    const container = $("viewer");
     const scene = new THREE.Scene();
     scene.background = new THREE.Color(0x05080a);
 
-    const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 5000);
-    camera.position.set(0, 140, 260);
+    const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 2000);
+    camera.position.set(0, 120, 260);
 
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
-    renderer.outputColorSpace = THREE.SRGBColorSpace;
-    renderer.shadowMap.enabled = false;
-
-    host.appendChild(renderer.domElement);
+    const renderer = new THREE.WebGLRenderer({ antialias:true, alpha:false });
+    renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+    renderer.setSize(container.clientWidth, container.clientHeight);
+    container.appendChild(renderer.domElement);
 
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
     controls.dampingFactor = 0.08;
-    controls.target.set(0, 40, 0);
 
     // Lights
-    scene.add(new THREE.AmbientLight(0xffffff, 0.9));
+    scene.add(new THREE.AmbientLight(0xffffff, 0.65));
     const key = new THREE.DirectionalLight(0xffffff, 0.9);
-    key.position.set(200, 300, 200);
+    key.position.set(150, 250, 180);
     scene.add(key);
+    const rim = new THREE.DirectionalLight(0x00d4ff, 0.35);
+    rim.position.set(-200, 120, -180);
+    scene.add(rim);
 
-    // Helpers
-    const grid = new THREE.GridHelper(400, 20, 0x00d4ff, 0x0b1a22);
-    grid.material.opacity = 0.22;
+    // Helpers: subtle grid
+    const grid = new THREE.GridHelper(500, 20, 0x00d4ff, 0x0a1a22);
+    grid.material.opacity = 0.18;
     grid.material.transparent = true;
     scene.add(grid);
 
-    const loader = new STLLoader();
-    let maxMesh = null, manMesh = null;
+    // STL handling
+    const stlLoader = new STLLoader();
+    let maxMesh = null;
+    let manMesh = null;
 
-    function setDot(el, ok){
-      el.className = "dot" + (ok ? " ok" : "");
+    const mat = new THREE.MeshStandardMaterial({
+      color: 0xeaeaea,
+      metalness: 0.1,
+      roughness: 0.45
+    });
+
+    function disposeMesh(m){
+      if(!m) return;
+      scene.remove(m);
+      m.geometry?.dispose?.();
+      if(Array.isArray(m.material)) m.material.forEach(x=>x.dispose?.());
+      else m.material?.dispose?.();
     }
 
-    function resize(){
-      const w = host.clientWidth;
-      const h = host.clientHeight;
-      if (!w || !h) return;
-      renderer.setSize(w, h, false);
-      camera.aspect = w / h;
-      camera.updateProjectionMatrix();
+    function centerAndPlace(mesh, y){
+      mesh.rotation.x = -Math.PI / 2;
+      // center geometry
+      mesh.geometry.computeBoundingBox();
+      const box = mesh.geometry.boundingBox;
+      const cx = (box.min.x + box.max.x) / 2;
+      const cy = (box.min.y + box.max.y) / 2;
+      const cz = (box.min.z + box.max.z) / 2;
+      mesh.geometry.translate(-cx, -cy, -cz);
+      mesh.position.set(0, y, 0);
+      mesh.scale.set(1,1,1);
     }
-    const ro = new ResizeObserver(resize);
-    ro.observe(host);
-    window.addEventListener("resize", resize);
 
-    function centerAndFit(){
+    function loadSTL(file, which){
+      if(!file) return;
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        try{
+          const geo = stlLoader.parse(e.target.result);
+          const mesh = new THREE.Mesh(geo, mat.clone());
+          centerAndPlace(mesh, which === "max" ? 28 : -28);
+
+          if(which === "max"){
+            disposeMesh(maxMesh);
+            maxMesh = mesh;
+            dotMax.classList.add("ok");
+            log("MAX cargada ✅", "#39ff14");
+          }else{
+            disposeMesh(manMesh);
+            manMesh = mesh;
+            dotMan.classList.add("ok");
+            log("MAN cargada ✅", "#39ff14");
+          }
+          scene.add(mesh);
+          fitView();
+        }catch(err){
+          console.error(err);
+          log("Error leyendo STL: " + err.message, "#ff5c5c");
+        }
+      };
+      reader.readAsArrayBuffer(file);
+    }
+
+    function fitView(){
+      // Fit both meshes if exist
+      const objs = [];
+      if(maxMesh) objs.push(maxMesh);
+      if(manMesh) objs.push(manMesh);
+      if(!objs.length){
+        log("No hay modelos para enfocar.", "#8fa0b3");
+        return;
+      }
       const box = new THREE.Box3();
-      let any = false;
-      if (maxMesh){ box.expandByObject(maxMesh); any = true; }
-      if (manMesh){ box.expandByObject(manMesh); any = true; }
-      if (!any){ log("Nada que enfocar (subí STL).", "rgba(255,255,255,.6)"); return; }
+      objs.forEach(o => box.expandByObject(o));
 
       const size = new THREE.Vector3();
-      const center = new THREE.Vector3();
       box.getSize(size);
+      const center = new THREE.Vector3();
       box.getCenter(center);
-
-      controls.target.copy(center);
 
       const maxDim = Math.max(size.x, size.y, size.z);
       const fov = camera.fov * (Math.PI / 180);
-      let dist = maxDim / (2 * Math.tan(fov / 2));
-      dist *= 1.35;
+      let camZ = Math.abs(maxDim / (2 * Math.tan(fov / 2)));
+      camZ *= 1.7;
 
-      camera.position.set(center.x, center.y + dist * 0.35, center.z + dist);
-      camera.near = Math.max(0.1, dist / 200);
-      camera.far = dist * 20;
-      camera.updateProjectionMatrix();
+      camera.position.set(center.x, center.y + maxDim*0.35, center.z + camZ);
+      controls.target.copy(center);
+      controls.update();
 
-      log("Vista enfocada / Fit view.", "rgba(0,212,255,.95)");
+      log("Fit view ✅", "#00d4ff");
     }
 
-    function clearMesh(mesh){
-      if (!mesh) return;
-      scene.remove(mesh);
-      mesh.geometry?.dispose?.();
-      mesh.material?.dispose?.();
+    function reset3D(){
+      disposeMesh(maxMesh); maxMesh=null; dotMax.classList.remove("ok");
+      disposeMesh(manMesh); manMesh=null; dotMan.classList.remove("ok");
+      camera.position.set(0, 120, 260);
+      controls.target.set(0,0,0);
+      controls.update();
+      log("Reset 3D ✅", "#00d4ff");
     }
 
-    function materialFor(type){
-      // max = ligeramente cyan, man = ligeramente verde
-      const color = (type === "max") ? 0xeef6ff : 0xf0fff0;
-      return new THREE.MeshStandardMaterial({
-        color,
-        metalness: 0.12,
-        roughness: 0.55
-      });
-    }
-
-    async function loadSTL(file, type){
-      if (!file) return;
-      const buf = await file.arrayBuffer();
-      const geom = loader.parse(buf);
-      geom.computeVertexNormals();
-
-      const mesh = new THREE.Mesh(geom, materialFor(type));
-      mesh.rotation.x = -Math.PI / 2;
-
-      if (type === "max"){
-        clearMesh(maxMesh);
-        maxMesh = mesh;
-        mesh.position.y = 60;
-        setDot(dotMax, true);
-      } else {
-        clearMesh(manMesh);
-        manMesh = mesh;
-        mesh.position.y = 10;
-        setDot(dotMan, true);
-      }
-
-      scene.add(mesh);
-      log(`${type.toUpperCase()} cargada: ${file.name}`, "rgba(57,255,20,.95)");
-      centerAndFit();
-    }
-
-    // ====== UI HOOKS ======
-    $("btnMax").onclick = () => $("inMax").click();
-    $("btnMan").onclick = () => $("inMan").click();
-
-    $("inMax").addEventListener("change", (e)=> loadSTL(e.target.files?.[0], "max"));
-    $("inMan").addEventListener("change", (e)=> loadSTL(e.target.files?.[0], "man"));
-
-    $("btnFit").onclick = centerAndFit;
-
-    $("btnReset").onclick = () => {
-      clearMesh(maxMesh); clearMesh(manMesh);
-      maxMesh = null; manMesh = null;
-      setDot(dotMax, false); setDot(dotMan, false);
-      controls.target.set(0,40,0);
-      camera.position.set(0,140,260);
-      camera.updateProjectionMatrix();
-      log("Reset 3D listo.", "rgba(255,255,255,.65)");
-    };
-
-    $("btnSim").onclick = () => {
-      // demo simple: separar un poco max/mandíbula
-      if (!maxMesh && !manMesh){
-        log("Subí STL antes de simular.", "rgba(255,120,120,.95)");
+    function simulateExpansion(){
+      // Simulación simple (placeholder): separa + escala lateral
+      const has = !!(maxMesh || manMesh);
+      if(!has){
+        log("Sube STL(s) antes de simular.", "#ffb020");
         return;
       }
-      if (maxMesh) maxMesh.position.x += 2.0;
-      if (manMesh) manMesh.position.x -= 2.0;
-      log("Simulación demo aplicada (+/- 2mm en X).", "rgba(57,255,20,.95)");
-    };
+      const amount = 1.03; // 3% "expansión"
+      if(maxMesh){
+        maxMesh.scale.x *= amount;
+        maxMesh.scale.z *= amount;
+        maxMesh.position.y = 32;
+      }
+      if(manMesh){
+        manMesh.scale.x *= amount;
+        manMesh.scale.z *= amount;
+        manMesh.position.y = -32;
+      }
+      log("Simulación aplicada (demo) ✅", "#39ff14");
+      fitView();
+    }
 
     // RX overlay
-    const rxOverlay = $("rxOverlay");
-    const rxImg = $("rxImg");
-
-    $("btnRx").onclick = () => $("inRx").click();
-
-    $("inRx").addEventListener("change", (e)=>{
-      const f = e.target.files?.[0];
-      if (!f) return;
-      const r = new FileReader();
-      r.onload = () => {
-        rxImg.src = r.result;
-        setDot(dotRx, true);
-        log(`RX lista: ${f.name}`, "rgba(0,212,255,.95)");
-      };
-      r.readAsDataURL(f);
-    });
-
-    $("btnOpenRx").onclick = () => {
-      if (!rxImg.src){
-        log("Primero subí una RX.", "rgba(255,120,120,.95)");
+    function openRx(){
+      if(!rxImg.src){
+        alert("Sube una RX primero.");
         return;
       }
-      rxOverlay.style.display = "flex";
-    };
+      rxOv.style.display = "flex";
+      log("Overlay RX abierto", "#00d4ff");
+    }
+    function closeRx(){
+      rxOv.style.display = "none";
+    }
 
-    $("rxClose").onclick = () => rxOverlay.style.display = "none";
-    window.addEventListener("keydown", (ev)=>{
-      if (ev.key === "Escape") rxOverlay.style.display = "none";
+    // Wire UI
+    btnMax.addEventListener("click", () => inMax.click());
+    btnMan.addEventListener("click", () => inMan.click());
+    inMax.addEventListener("change", (e) => loadSTL(e.target.files?.[0], "max"));
+    inMan.addEventListener("change", (e) => loadSTL(e.target.files?.[0], "man"));
+
+    btnSim.addEventListener("click", simulateExpansion);
+    btnFit.addEventListener("click", fitView);
+    btnReset.addEventListener("click", reset3D);
+
+    btnRx.addEventListener("click", () => inRx.click());
+    inRx.addEventListener("change", (e) => {
+      const file = e.target.files?.[0];
+      if(!file) return;
+      const r = new FileReader();
+      r.onload = (ev) => {
+        rxImg.src = ev.target.result;
+        dotRx.classList.add("cy");
+        log("RX lista ✅", "#00d4ff");
+      };
+      r.readAsDataURL(file);
+    });
+    btnRxOpen.addEventListener("click", openRx);
+    rxClose.addEventListener("click", closeRx);
+    window.addEventListener("keydown", (ev) => { if(ev.key === "Escape") closeRx(); });
+
+    btnSend.addEventListener("click", () => {
+      const notes = $("notes").value.trim();
+      log("ENVIAR A PRODUCCIÓN (demo) — notas: " + (notes ? notes.slice(0,80) + (notes.length>80?"…":"") : "(vacío)"), "#ff5cff");
+      alert("Demo: aquí conectarías tu envío a email/Drive/endpoint.");
     });
 
-    $("btnSend").onclick = () => {
-      const txt = $("notes").value.trim();
-      log("Envío a producción (demo).", "rgba(255,0,255,.95)");
-      if (txt) log("Notas: " + txt, "rgba(255,0,255,.75)");
-    };
-
-    // ====== WebGL check ======
-    try{
-      const gl = renderer.getContext();
-      if (gl) setDot(dotWebgl, true);
-      log("WEBGL OK", "rgba(57,255,20,.95)");
-    }catch(err){
-      setDot(dotWebgl, false);
-      log("WEBGL FALLÓ: " + err?.message, "rgba(255,120,120,.95)");
+    // Resize
+    function onResize(){
+      const w = container.clientWidth;
+      const h = container.clientHeight;
+      renderer.setSize(w, h);
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
     }
+    new ResizeObserver(onResize).observe(container);
 
     // Render loop
     function tick(){
@@ -414,8 +443,12 @@
       renderer.render(scene, camera);
       requestAnimationFrame(tick);
     }
-    resize();
     tick();
+
+    // If something breaks, you see it
+    window.addEventListener("error", (e) => {
+      log("JS Error: " + e.message, "#ff5c5c");
+    });
   </script>
 </body>
 </html>
