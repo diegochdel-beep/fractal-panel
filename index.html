@@ -1,0 +1,581 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Fractal Labs | Panel 3D</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg:#05080a; --side:#0a1219; --neon:#39ff14; --cyan:#00d4ff;
+      --text:#e0e6ed; --muted:#8fa0b3; --line:rgba(0,212,255,.18);
+      --card:rgba(255,255,255,.03);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; background:var(--bg); color:var(--text);
+      font-family:Roboto,system-ui,-apple-system,Segoe UI,Arial,sans-serif;
+      overflow:hidden;
+    }
+
+    .wrap{
+      height:100vh; width:100vw;
+      display:flex;
+      border:1px solid rgba(255,255,255,.06);
+    }
+
+    /* SIDEBAR */
+    aside{
+      width:320px; min-width:320px; max-width:320px;
+      background:linear-gradient(180deg, rgba(10,18,25,.98), rgba(10,18,25,.92));
+      border-right:1px solid var(--line);
+      padding:18px;
+      overflow:auto;
+    }
+    .brand{
+      text-align:center; padding:10px 10px 14px;
+      border:1px solid rgba(57,255,20,.14);
+      border-radius:14px;
+      background:rgba(57,255,20,.04);
+      box-shadow:0 0 24px rgba(57,255,20,.06);
+      margin-bottom:14px;
+    }
+    .brand .t{
+      font-family:Orbitron, sans-serif;
+      color:var(--neon);
+      letter-spacing:2px;
+      font-size:18px;
+      text-shadow:0 0 10px rgba(57,255,20,.35);
+    }
+    .brand .s{
+      margin-top:6px;
+      font-size:10px;
+      color:rgba(224,230,237,.65);
+      letter-spacing:.5px;
+    }
+
+    .block{
+      border:1px solid rgba(255,255,255,.06);
+      border-radius:14px;
+      background:var(--card);
+      padding:12px;
+      margin-bottom:12px;
+    }
+    .block h3{
+      margin:0 0 10px 0;
+      font-family:Orbitron,sans-serif;
+      font-size:11px;
+      color:var(--cyan);
+      letter-spacing:1px;
+      text-transform:uppercase;
+    }
+    .grid2{display:grid; grid-template-columns:1fr 1fr; gap:8px;}
+    .btn, .drop{
+      width:100%;
+      padding:11px 10px;
+      border-radius:10px;
+      font-family:Orbitron,sans-serif;
+      font-size:10px;
+      cursor:pointer;
+      transition:.18s ease;
+      background:transparent;
+      color:var(--text);
+      border:1px solid rgba(0,212,255,.22);
+    }
+    .drop{
+      border-style:dashed;
+      color:rgba(224,230,237,.9);
+      background:rgba(0,212,255,.04);
+    }
+    .drop:hover{border-color:var(--neon); box-shadow:0 0 16px rgba(57,255,20,.12)}
+    .btn:hover{border-color:var(--neon); box-shadow:0 0 16px rgba(0,212,255,.12)}
+
+    .btn.neon{border-color:rgba(57,255,20,.55); color:var(--neon)}
+    .btn.neon:hover{background:rgba(57,255,20,.12)}
+    .btn.mag{border-color:rgba(255,0,255,.55); color:#ff00ff}
+    .btn.mag:hover{background:rgba(255,0,255,.10)}
+
+    .help{
+      font-size:10px; line-height:1.35; color:rgba(224,230,237,.72);
+      border:1px solid rgba(0,212,255,.14);
+      border-radius:12px;
+      padding:10px;
+      background:rgba(0,212,255,.05);
+      margin-bottom:10px;
+    }
+
+    textarea{
+      width:100%; height:70px;
+      background:#000;
+      color:#fff;
+      border:1px solid rgba(0,212,255,.35);
+      border-radius:12px;
+      padding:10px;
+      font-size:11px;
+      outline:none;
+    }
+
+    .log{
+      height:120px;
+      overflow:auto;
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:12px;
+      background:rgba(0,0,0,.45);
+      padding:10px;
+      font-size:10px;
+      color:rgba(224,230,237,.75);
+    }
+    .pill{
+      display:inline-flex; align-items:center; gap:6px;
+      font-family:Orbitron,sans-serif;
+      font-size:9px;
+      padding:7px 10px;
+      border-radius:999px;
+      border:1px solid rgba(0,212,255,.25);
+      color:rgba(224,230,237,.85);
+      background:rgba(0,212,255,.05);
+    }
+    .dot{width:8px; height:8px; border-radius:50%}
+
+    /* MAIN */
+    main{flex:1; position:relative; background:#000;}
+    #canvas3d{position:absolute; inset:0; background:#000;}
+
+    /* RX overlay */
+    #rxOverlay{
+      position:absolute; inset:0; display:none;
+      background:rgba(0,0,0,.92);
+      z-index:999;
+      align-items:center; justify-content:center;
+      padding:20px;
+    }
+    .rxBox{
+      position:relative;
+      max-width:min(1200px, 92vw);
+      max-height:86vh;
+      border:2px solid rgba(0,212,255,.6);
+      border-radius:14px;
+      overflow:hidden;
+      box-shadow:0 0 28px rgba(0,212,255,.15);
+      background:#000;
+    }
+    .rxBox img{
+      display:block;
+      max-width:100%;
+      max-height:86vh;
+    }
+    .rxClose{
+      position:absolute; top:10px; right:10px;
+      border:1px solid rgba(57,255,20,.6);
+      color:var(--neon);
+      background:rgba(0,0,0,.35);
+      border-radius:999px;
+      padding:8px 10px;
+      font-family:Orbitron,sans-serif;
+      font-size:10px;
+      cursor:pointer;
+    }
+
+    /* small status top-left */
+    .topbar{
+      position:absolute; top:14px; left:14px; z-index:5;
+      display:flex; gap:8px; align-items:center;
+      pointer-events:none;
+    }
+    .topbar .pill{pointer-events:auto}
+
+    @media (max-width: 920px){
+      body{overflow:auto}
+      .wrap{flex-direction:column; height:auto; overflow:visible}
+      aside{width:100%; min-width:0; max-width:none}
+      main{height:560px}
+      #canvas3d{position:relative; height:560px}
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <aside>
+      <div class="brand">
+        <div class="t">FRACTAL LABS</div>
+        <div class="s">Dental Intelligence Panel — WebGL</div>
+      </div>
+
+      <div class="block">
+        <div class="help">
+          <b style="color:#cfefff">3D:</b> rota/zoom con mouse. <b style="color:#cfefff">Medir:</b> Shift+Click 2 puntos (próxima versión).
+        </div>
+        <div style="display:flex; gap:8px; flex-wrap:wrap">
+          <span class="pill"><span class="dot" id="stWebgl" style="background:#ff4757"></span>WEBGL</span>
+          <span class="pill"><span class="dot" id="stMax" style="background:#8fa0b3"></span>MAX</span>
+          <span class="pill"><span class="dot" id="stMan" style="background:#8fa0b3"></span>MAN</span>
+          <span class="pill"><span class="dot" id="stRx" style="background:#8fa0b3"></span>RX</span>
+        </div>
+      </div>
+
+      <div class="block">
+        <h3>1) MODELOS STL</h3>
+        <div class="grid2">
+          <button class="drop" id="btnMax">MAXILA</button>
+          <button class="drop" id="btnMan">MANDÍBULA</button>
+        </div>
+        <input type="file" id="inMax" hidden accept=".stl">
+        <input type="file" id="inMan" hidden accept=".stl">
+
+        <button class="btn neon" id="btnSim">SIMULAR EXPANSIÓN</button>
+        <button class="btn" id="btnFit">ENFOCAR / FIT VIEW</button>
+        <button class="btn" id="btnReset">RESET 3D</button>
+      </div>
+
+      <div class="block">
+        <h3>2) RX</h3>
+        <div class="grid2">
+          <button class="drop" id="btnRx">SUBIR RX</button>
+          <button class="btn neon" id="btnOpenRx">ABRIR OVERLAY</button>
+        </div>
+        <input type="file" id="inRx" hidden accept="image/*">
+      </div>
+
+      <div class="block">
+        <h3>NOTAS</h3>
+        <textarea id="notes" placeholder="Notas del caso..."></textarea>
+        <button class="btn mag" id="btnSend">ENVIAR A PRODUCCIÓN</button>
+      </div>
+
+      <div class="block">
+        <h3>LOG</h3>
+        <div class="log" id="log"></div>
+      </div>
+    </aside>
+
+    <main>
+      <div class="topbar">
+        <span class="pill">3D PANEL</span>
+        <span class="pill">Fractal Labs</span>
+      </div>
+      <div id="canvas3d"></div>
+
+      <div id="rxOverlay">
+        <div class="rxBox">
+          <button class="rxClose" id="btnCloseRx">CERRAR (ESC)</button>
+          <img id="rxImg" alt="RX"/>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Three.js (UMD) + addons UMD: compatible con GitHub Pages y evita importmap/module issues -->
+  <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/examples/js/controls/OrbitControls.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/examples/js/loaders/STLLoader.js"></script>
+
+  <script>
+    (function(){
+      const $ = (id)=>document.getElementById(id);
+
+      // UI
+      const logEl = $("log");
+      function log(msg, color){
+        const d=document.createElement("div");
+        d.textContent=msg;
+        d.style.color=color||"rgba(224,230,237,.75)";
+        d.style.margin="0 0 6px 0";
+        logEl.appendChild(d);
+        logEl.scrollTop=logEl.scrollHeight;
+      }
+      function setDot(id, hex){
+        $(id).style.background = hex;
+      }
+
+      // WebGL check
+      const webglOK = (function(){
+        try{
+          const c=document.createElement("canvas");
+          return !!(window.WebGLRenderingContext && (c.getContext("webgl")||c.getContext("experimental-webgl")));
+        }catch(e){ return false; }
+      })();
+      setDot("stWebgl", webglOK ? "#39ff14" : "#ff4757");
+      log(webglOK ? "WEBGL: OK" : "WEBGL: NO DISPONIBLE", webglOK ? "#39ff14" : "#ff4757");
+
+      // DOM refs
+      const canvasHost = $("canvas3d");
+      const rxOverlay = $("rxOverlay");
+      const rxImg = $("rxImg");
+
+      // Files
+      let stlMaxFile=null, stlManFile=null, rxFile=null;
+
+      // 3D core
+      const scene = new THREE.Scene();
+      scene.background = new THREE.Color(0x000000);
+
+      const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 4000);
+      camera.position.set(0, 70, 180);
+
+      const renderer = new THREE.WebGLRenderer({antialias:true, alpha:false});
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio||1, 2));
+      canvasHost.appendChild(renderer.domElement);
+
+      const controls = new THREE.OrbitControls(camera, renderer.domElement);
+      controls.enableDamping = true;
+      controls.dampingFactor = 0.08;
+
+      // Lights
+      scene.add(new THREE.AmbientLight(0xffffff, 0.9));
+      const key = new THREE.DirectionalLight(0x00d4ff, 1.2);
+      key.position.set(120, 140, 120);
+      scene.add(key);
+
+      // Helpers (para que SIEMPRE veas algo aunque no cargues STL)
+      const grid = new THREE.GridHelper(240, 24, 0x00d4ff, 0x0a2a33);
+      grid.position.y = -18;
+      scene.add(grid);
+
+      const axes = new THREE.AxesHelper(60);
+      scene.add(axes);
+
+      // STL
+      const loader = new THREE.STLLoader();
+      let maxMesh=null, manMesh=null;
+      let simOn=false;
+
+      function disposeMesh(m){
+        if(!m) return;
+        scene.remove(m);
+        if(m.geometry) m.geometry.dispose();
+        if(m.material) m.material.dispose();
+      }
+
+      function centerAndScale(geom){
+        geom.computeVertexNormals();
+        geom.computeBoundingBox();
+        const box = geom.boundingBox;
+        const size = new THREE.Vector3();
+        box.getSize(size);
+        const maxDim = Math.max(size.x,size.y,size.z) || 1;
+        // Normaliza a tamaño clínico razonable visual (no cambia unidades, solo vista)
+        const scale = 120 / maxDim;
+        geom.translate(
+          -(box.min.x + size.x/2),
+          -(box.min.y + size.y/2),
+          -(box.min.z + size.z/2)
+        );
+        return scale;
+      }
+
+      function loadSTL(file, type){
+        if(!file) return;
+        const r = new FileReader();
+        r.onload = (e)=>{
+          const geom = loader.parse(e.target.result);
+          const viewScale = centerAndScale(geom);
+
+          const mat = new THREE.MeshPhongMaterial({
+            color: 0xeaeaea,
+            shininess: 90,
+            transparent: true,
+            opacity: 1
+          });
+          const mesh = new THREE.Mesh(geom, mat);
+
+          // Orientación estándar (muchos STL vienen "parados")
+          mesh.rotation.x = -Math.PI/2;
+          mesh.scale.setScalar(viewScale);
+
+          if(type==="max"){
+            disposeMesh(maxMesh);
+            maxMesh = mesh;
+            maxMesh.position.y = 18;
+            stlMaxFile = file;
+            setDot("stMax", "#39ff14");
+            log("STL MAX cargado: " + file.name, "#00d4ff");
+          }else{
+            disposeMesh(manMesh);
+            manMesh = mesh;
+            manMesh.position.y = -18;
+            stlManFile = file;
+            setDot("stMan", "#39ff14");
+            log("STL MAN cargado: " + file.name, "#00d4ff");
+          }
+
+          scene.add(mesh);
+          fitView();
+        };
+        r.readAsArrayBuffer(file);
+      }
+
+      function fitView(){
+        // Encaja cámara a ambos modelos o a helpers si no hay STL
+        const box = new THREE.Box3();
+        let has=false;
+
+        if(maxMesh){ box.expandByObject(maxMesh); has=true; }
+        if(manMesh){ box.expandByObject(manMesh); has=true; }
+
+        if(!has){
+          // fallback: grid/axes
+          box.setFromCenterAndSize(new THREE.Vector3(0,0,0), new THREE.Vector3(180,120,180));
+        }
+
+        const size = new THREE.Vector3(); box.getSize(size);
+        const center = new THREE.Vector3(); box.getCenter(center);
+
+        controls.target.copy(center);
+        controls.update();
+
+        const maxDim = Math.max(size.x,size.y,size.z) || 1;
+        const fov = camera.fov * (Math.PI/180);
+        let dist = (maxDim/2) / Math.tan(fov/2);
+        dist *= 1.35;
+
+        camera.position.set(center.x, center.y + maxDim*0.25, center.z + dist);
+        camera.near = Math.max(0.1, dist/100);
+        camera.far  = Math.max(2000, dist*10);
+        camera.updateProjectionMatrix();
+      }
+
+      function reset3D(){
+        simOn=false;
+        if(maxMesh){
+          maxMesh.material.color.setHex(0xeaeaea);
+          maxMesh.position.y = 18;
+          maxMesh.scale.set(maxMesh.scale.x, maxMesh.scale.y, maxMesh.scale.z);
+        }
+        if(manMesh){
+          manMesh.material.color.setHex(0xeaeaea);
+          manMesh.position.y = -18;
+          manMesh.scale.set(manMesh.scale.x, manMesh.scale.y, manMesh.scale.z);
+        }
+        log("RESET 3D", "#8fa0b3");
+        fitView();
+      }
+
+      function simulate(){
+        if(!maxMesh || !manMesh){
+          alert("Primero carga MAXILA y MANDÍBULA (.stl).");
+          return;
+        }
+        simOn = !simOn;
+        const mul = simOn ? 1.03 : 1.00;
+        const gap = simOn ? 10 : 36;
+
+        maxMesh.scale.multiplyScalar(mul / maxMesh.scale.x * maxMesh.scale.x); // no-op safe
+        manMesh.scale.multiplyScalar(mul / manMesh.scale.x * manMesh.scale.x);
+
+        // Más simple y estable: set absoluto sobre escala actual base (viewScale ya aplicado)
+        const sMax = maxMesh.scale.clone();
+        const sMan = manMesh.scale.clone();
+        const baseMax = sMax.multiplyScalar(simOn ? 1.03 : (1/1.03));
+        const baseMan = sMan.multiplyScalar(simOn ? 1.03 : (1/1.03));
+        maxMesh.scale.copy(baseMax);
+        manMesh.scale.copy(baseMan);
+
+        maxMesh.position.y = gap/2;
+        manMesh.position.y = -gap/2;
+
+        maxMesh.material.color.setHex(simOn ? 0x39ff14 : 0xeaeaea);
+
+        log("Simulación expansión: " + (simOn ? "ON" : "OFF"), simOn ? "#39ff14" : "#8fa0b3");
+      }
+
+      // RX
+      function readAsDataURL(file){
+        return new Promise((res, rej)=>{
+          const rr=new FileReader();
+          rr.onload=()=>res(rr.result);
+          rr.onerror=rej;
+          rr.readAsDataURL(file);
+        });
+      }
+
+      async function loadRX(file){
+        if(!file) return;
+        rxFile = file;
+        rxImg.src = await readAsDataURL(file);
+        setDot("stRx", "#39ff14");
+        log("RX cargada: " + file.name, "#00d4ff");
+      }
+
+      function openRX(){
+        if(!rxImg.src){
+          alert("Sube una RX primero.");
+          return;
+        }
+        rxOverlay.style.display="flex";
+      }
+      function closeRX(){ rxOverlay.style.display="none"; }
+
+      // Resize
+      function resize(){
+        const w = canvasHost.clientWidth || window.innerWidth;
+        const h = canvasHost.clientHeight || window.innerHeight;
+        renderer.setSize(w, h, false);
+        camera.aspect = w / h;
+        camera.updateProjectionMatrix();
+      }
+      window.addEventListener("resize", ()=>{ resize(); requestAnimationFrame(fitView); });
+
+      // Wire UI
+      $("btnMax").onclick = ()=>$("inMax").click();
+      $("btnMan").onclick = ()=>$("inMan").click();
+      $("btnRx").onclick  = ()=>$("inRx").click();
+
+      $("inMax").addEventListener("change", (e)=> loadSTL(e.target.files[0], "max"));
+      $("inMan").addEventListener("change", (e)=> loadSTL(e.target.files[0], "man"));
+      $("inRx").addEventListener("change",  (e)=> loadRX(e.target.files[0]));
+
+      $("btnSim").onclick = simulate;
+      $("btnFit").onclick = fitView;
+      $("btnReset").onclick = reset3D;
+
+      $("btnOpenRx").onclick = openRX;
+      $("btnCloseRx").onclick = closeRX;
+      window.addEventListener("keydown", (e)=>{ if(e.key==="Escape") closeRX(); });
+
+      // Send
+      $("btnSend").onclick = ()=>{
+        const notes = $("notes").value.trim();
+        const checklist = [
+          `STL MAX: ${stlMaxFile ? "✅" : "❌"}`,
+          `STL MAN: ${stlManFile ? "✅" : "❌"}`,
+          `RX: ${rxFile ? "✅" : "❌"}`
+        ].join("\n");
+
+        const body =
+`ORDEN FRACTAL LABS — Caso nuevo
+
+CHECKLIST:
+${checklist}
+
+NOTAS:
+${notes || "—"}
+
+LINK PARA SUBIR ARCHIVOS (Smash):
+https://fromsmash.com/
+`;
+
+        const subj = "Nuevo Caso Dental (Fractal Labs)";
+        window.location.href = "mailto:produccion@fractallabs.com?subject=" + encodeURIComponent(subj) + "&body=" + encodeURIComponent(body);
+      };
+
+      // First paint
+      function animate(){
+        requestAnimationFrame(animate);
+        controls.update();
+        renderer.render(scene, camera);
+      }
+      resize();
+      fitView();
+      animate();
+
+      log("STATUS: listo. Carga STL y RX.", "#39ff14");
+    })();
+  </script>
+</body>
+</html>
