@@ -1,8 +1,8 @@
 <!doctype html>
 <html lang="es">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Fractal Labs | Panel 3D</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -11,8 +11,10 @@
 
   <style>
     :root{
-      --bg:#05080a; --side:#0a1219; --neon:#39ff14; --cyan:#00d4ff;
-      --text:#e0e6ed; --muted:#8fa0b3; --line:rgba(0,212,255,.18);
+      --bg:#05080a; --side:#0a1219;
+      --neon:#39ff14; --cyan:#00d4ff;
+      --text:#e0e6ed; --muted:#8fa0b3;
+      --line:rgba(0,212,255,.18);
       --card:rgba(255,255,255,.03);
     }
     *{box-sizing:border-box}
@@ -22,230 +24,151 @@
       font-family:Roboto,system-ui,-apple-system,Segoe UI,Arial,sans-serif;
       overflow:hidden;
     }
-
-    .wrap{
-      height:100vh; width:100vw;
-      display:flex;
-      border:1px solid rgba(255,255,255,.06);
-    }
-
-    /* SIDEBAR */
-    aside{
-      width:320px; min-width:320px; max-width:320px;
-      background:linear-gradient(180deg, rgba(10,18,25,.98), rgba(10,18,25,.92));
-      border-right:1px solid var(--line);
-      padding:18px;
-      overflow:auto;
+    .wrap{display:flex; height:100vh; border:1px solid rgba(255,255,255,.06); border-radius:14px; overflow:hidden}
+    .side{
+      width:320px; background:linear-gradient(180deg,#071018,#05080a);
+      border-right:1px solid rgba(255,255,255,.06);
+      padding:18px 16px; overflow:auto;
     }
     .brand{
-      text-align:center; padding:10px 10px 14px;
-      border:1px solid rgba(57,255,20,.14);
-      border-radius:14px;
-      background:rgba(57,255,20,.04);
-      box-shadow:0 0 24px rgba(57,255,20,.06);
-      margin-bottom:14px;
+      border:1px solid rgba(57,255,20,.18);
+      background:radial-gradient(120% 120% at 10% 10%, rgba(57,255,20,.10), transparent 50%),
+                 radial-gradient(120% 120% at 90% 10%, rgba(0,212,255,.10), transparent 55%),
+                 rgba(255,255,255,.02);
+      border-radius:14px; padding:14px 12px; margin-bottom:14px;
+      box-shadow:0 0 0 1px rgba(0,0,0,.2) inset;
     }
-    .brand .t{
-      font-family:Orbitron, sans-serif;
-      color:var(--neon);
-      letter-spacing:2px;
-      font-size:18px;
-      text-shadow:0 0 10px rgba(57,255,20,.35);
+    .title{
+      font-family:Orbitron,system-ui; letter-spacing:.12em;
+      color:var(--neon); font-size:18px; text-align:center;
+      text-shadow:0 0 18px rgba(57,255,20,.25);
     }
-    .brand .s{
-      margin-top:6px;
-      font-size:10px;
-      color:rgba(224,230,237,.65);
-      letter-spacing:.5px;
-    }
-
+    .sub{font-size:11px; text-align:center; color:rgba(224,230,237,.6); margin-top:6px}
     .block{
+      margin:12px 0; padding:12px;
+      background:linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.01));
       border:1px solid rgba(255,255,255,.06);
       border-radius:14px;
-      background:var(--card);
-      padding:12px;
-      margin-bottom:12px;
     }
-    .block h3{
-      margin:0 0 10px 0;
-      font-family:Orbitron,sans-serif;
-      font-size:11px;
-      color:var(--cyan);
-      letter-spacing:1px;
-      text-transform:uppercase;
+    h3{
+      margin:0 0 10px; font-family:Orbitron,system-ui;
+      font-size:11px; letter-spacing:.12em; color:rgba(0,212,255,.95);
     }
-    .grid2{display:grid; grid-template-columns:1fr 1fr; gap:8px;}
-    .btn, .drop{
-      width:100%;
-      padding:11px 10px;
-      border-radius:10px;
-      font-family:Orbitron,sans-serif;
-      font-size:10px;
-      cursor:pointer;
-      transition:.18s ease;
-      background:transparent;
-      color:var(--text);
-      border:1px solid rgba(0,212,255,.22);
+    .grid2{display:grid; grid-template-columns:1fr 1fr; gap:8px}
+    .btn{
+      width:100%; padding:10px 10px; border-radius:10px;
+      font-family:Orbitron,system-ui; font-size:10px; letter-spacing:.08em;
+      cursor:pointer; transition:.18s ease;
+      border:1px solid rgba(255,255,255,.10);
+      background:rgba(0,0,0,.35); color:var(--text);
     }
-    .drop{
-      border-style:dashed;
-      color:rgba(224,230,237,.9);
-      background:rgba(0,212,255,.04);
-    }
-    .drop:hover{border-color:var(--neon); box-shadow:0 0 16px rgba(57,255,20,.12)}
-    .btn:hover{border-color:var(--neon); box-shadow:0 0 16px rgba(0,212,255,.12)}
-
+    .btn:hover{transform:translateY(-1px)}
     .btn.neon{border-color:rgba(57,255,20,.55); color:var(--neon)}
     .btn.neon:hover{background:rgba(57,255,20,.12)}
-    .btn.mag{border-color:rgba(255,0,255,.55); color:#ff00ff}
-    .btn.mag:hover{background:rgba(255,0,255,.10)}
-
-    .help{
-      font-size:10px; line-height:1.35; color:rgba(224,230,237,.72);
-      border:1px solid rgba(0,212,255,.14);
-      border-radius:12px;
-      padding:10px;
-      background:rgba(0,212,255,.05);
-      margin-bottom:10px;
-    }
-
-    textarea{
-      width:100%; height:70px;
-      background:#000;
-      color:#fff;
+    .btn.cyan{border-color:rgba(0,212,255,.55); color:rgba(0,212,255,.95)}
+    .btn.cyan:hover{background:rgba(0,212,255,.10)}
+    .btn.mag{border-color:rgba(255,0,255,.55); color:rgba(255,0,255,.95)}
+    .btn.mag:hover{background:rgba(255,0,255,.08)}
+    .notes{
+      width:100%; height:70px; resize:none;
+      background:rgba(0,0,0,.45); color:var(--text);
       border:1px solid rgba(0,212,255,.35);
-      border-radius:12px;
-      padding:10px;
-      font-size:11px;
+      border-radius:10px; padding:10px; font-size:12px;
       outline:none;
     }
-
     .log{
-      height:120px;
-      overflow:auto;
+      height:120px; overflow:auto; font-size:11px; line-height:1.35;
       border:1px solid rgba(255,255,255,.08);
-      border-radius:12px;
-      background:rgba(0,0,0,.45);
-      padding:10px;
-      font-size:10px;
-      color:rgba(224,230,237,.75);
+      background:rgba(0,0,0,.35);
+      border-radius:12px; padding:10px;
     }
+    .pillrow{display:flex; gap:8px; flex-wrap:wrap; margin-top:8px}
     .pill{
       display:inline-flex; align-items:center; gap:6px;
-      font-family:Orbitron,sans-serif;
-      font-size:9px;
-      padding:7px 10px;
-      border-radius:999px;
-      border:1px solid rgba(0,212,255,.25);
-      color:rgba(224,230,237,.85);
-      background:rgba(0,212,255,.05);
+      padding:6px 10px; border-radius:999px;
+      border:1px solid rgba(255,255,255,.10);
+      background:rgba(0,0,0,.35);
+      font-size:11px; color:rgba(224,230,237,.75);
+      font-family:Orbitron,system-ui;
     }
-    .dot{width:8px; height:8px; border-radius:50%}
-
-    /* MAIN */
-    main{flex:1; position:relative; background:#000;}
-    #canvas3d{position:absolute; inset:0; background:#000;}
-
-    /* RX overlay */
-    #rxOverlay{
+    .dot{width:8px; height:8px; border-radius:50%; background:#666}
+    .dot.ok{background:var(--neon); box-shadow:0 0 12px rgba(57,255,20,.35)}
+    .main{flex:1; position:relative; background:#000}
+    #canvas3d{position:absolute; inset:0}
+    .rxOverlay{
       position:absolute; inset:0; display:none;
       background:rgba(0,0,0,.92);
-      z-index:999;
-      align-items:center; justify-content:center;
-      padding:20px;
+      z-index:50; align-items:center; justify-content:center;
+      padding:18px;
     }
     .rxBox{
-      position:relative;
-      max-width:min(1200px, 92vw);
-      max-height:86vh;
-      border:2px solid rgba(0,212,255,.6);
+      max-width:min(1100px,96vw);
+      max-height:88vh;
+      border:1px solid rgba(0,212,255,.45);
       border-radius:14px;
       overflow:hidden;
-      box-shadow:0 0 28px rgba(0,212,255,.15);
-      background:#000;
+      background:rgba(0,0,0,.35);
+      position:relative;
     }
-    .rxBox img{
-      display:block;
-      max-width:100%;
-      max-height:86vh;
-    }
+    .rxBox img{display:block; max-width:96vw; max-height:88vh}
     .rxClose{
       position:absolute; top:10px; right:10px;
-      border:1px solid rgba(57,255,20,.6);
-      color:var(--neon);
-      background:rgba(0,0,0,.35);
-      border-radius:999px;
-      padding:8px 10px;
-      font-family:Orbitron,sans-serif;
-      font-size:10px;
-      cursor:pointer;
+      border:1px solid rgba(57,255,20,.55);
+      color:var(--neon); background:rgba(0,0,0,.55);
+      padding:8px 10px; border-radius:10px; cursor:pointer;
+      font-family:Orbitron,system-ui; font-size:10px;
     }
-
-    /* small status top-left */
-    .topbar{
-      position:absolute; top:14px; left:14px; z-index:5;
-      display:flex; gap:8px; align-items:center;
-      pointer-events:none;
-    }
-    .topbar .pill{pointer-events:auto}
-
-    @media (max-width: 920px){
+    @media (max-width: 900px){
       body{overflow:auto}
-      .wrap{flex-direction:column; height:auto; overflow:visible}
-      aside{width:100%; min-width:0; max-width:none}
-      main{height:560px}
-      #canvas3d{position:relative; height:560px}
+      .wrap{flex-direction:column; height:auto; min-height:100vh}
+      .side{width:100%}
+      .main{height:70vh; min-height:520px}
+      #canvas3d{position:relative; height:70vh}
     }
   </style>
 </head>
 
 <body>
   <div class="wrap">
-    <aside>
+    <aside class="side">
       <div class="brand">
-        <div class="t">FRACTAL LABS</div>
-        <div class="s">Dental Intelligence Panel — WebGL</div>
-      </div>
-
-      <div class="block">
-        <div class="help">
-          <b style="color:#cfefff">3D:</b> rota/zoom con mouse. <b style="color:#cfefff">Medir:</b> Shift+Click 2 puntos (próxima versión).
-        </div>
-        <div style="display:flex; gap:8px; flex-wrap:wrap">
-          <span class="pill"><span class="dot" id="stWebgl" style="background:#ff4757"></span>WEBGL</span>
-          <span class="pill"><span class="dot" id="stMax" style="background:#8fa0b3"></span>MAX</span>
-          <span class="pill"><span class="dot" id="stMan" style="background:#8fa0b3"></span>MAN</span>
-          <span class="pill"><span class="dot" id="stRx" style="background:#8fa0b3"></span>RX</span>
+        <div class="title">FRACTAL LABS</div>
+        <div class="sub">Dental Intelligence Panel — WebGL</div>
+        <div class="pillrow">
+          <span class="pill"><span class="dot" id="dotWebgl"></span> WEBGL</span>
+          <span class="pill"><span class="dot" id="dotMax"></span> MAX</span>
+          <span class="pill"><span class="dot" id="dotMan"></span> MAN</span>
+          <span class="pill"><span class="dot" id="dotRx"></span> RX</span>
         </div>
       </div>
 
       <div class="block">
         <h3>1) MODELOS STL</h3>
         <div class="grid2">
-          <button class="drop" id="btnMax">MAXILA</button>
-          <button class="drop" id="btnMan">MANDÍBULA</button>
+          <button class="btn cyan" id="btnMax">MAXILA</button>
+          <button class="btn cyan" id="btnMan">MANDÍBULA</button>
         </div>
-        <input type="file" id="inMax" hidden accept=".stl">
-        <input type="file" id="inMan" hidden accept=".stl">
+        <input id="inMax" type="file" accept=".stl" hidden>
+        <input id="inMan" type="file" accept=".stl" hidden>
 
-        <button class="btn neon" id="btnSim">SIMULAR EXPANSIÓN</button>
-        <button class="btn" id="btnFit">ENFOCAR / FIT VIEW</button>
-        <button class="btn" id="btnReset">RESET 3D</button>
+        <button class="btn neon" id="btnSim" style="margin-top:10px">SIMULAR EXPANSIÓN</button>
+        <button class="btn" id="btnFit" style="margin-top:8px">ENFOCAR / FIT VIEW</button>
+        <button class="btn" id="btnReset" style="margin-top:8px">RESET 3D</button>
       </div>
 
       <div class="block">
         <h3>2) RX</h3>
         <div class="grid2">
-          <button class="drop" id="btnRx">SUBIR RX</button>
+          <button class="btn cyan" id="btnRx">SUBIR RX</button>
           <button class="btn neon" id="btnOpenRx">ABRIR OVERLAY</button>
         </div>
-        <input type="file" id="inRx" hidden accept="image/*">
+        <input id="inRx" type="file" accept="image/*" hidden>
       </div>
 
       <div class="block">
         <h3>NOTAS</h3>
-        <textarea id="notes" placeholder="Notas del caso..."></textarea>
-        <button class="btn mag" id="btnSend">ENVIAR A PRODUCCIÓN</button>
+        <textarea class="notes" id="notes" placeholder="Notas del caso..."></textarea>
+        <button class="btn mag" id="btnSend" style="margin-top:10px">ENVIAR A PRODUCCIÓN</button>
       </div>
 
       <div class="block">
@@ -254,328 +177,245 @@
       </div>
     </aside>
 
-    <main>
-      <div class="topbar">
-        <span class="pill">3D PANEL</span>
-        <span class="pill">Fractal Labs</span>
-      </div>
+    <main class="main">
       <div id="canvas3d"></div>
 
-      <div id="rxOverlay">
+      <div class="rxOverlay" id="rxOverlay">
         <div class="rxBox">
-          <button class="rxClose" id="btnCloseRx">CERRAR (ESC)</button>
-          <img id="rxImg" alt="RX"/>
+          <button class="rxClose" id="rxClose">CERRAR (ESC)</button>
+          <img id="rxImg" alt="RX">
         </div>
       </div>
     </main>
   </div>
 
-  <!-- Three.js (UMD) + addons UMD: compatible con GitHub Pages y evita importmap/module issues -->
-  <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/examples/js/controls/OrbitControls.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/examples/js/loaders/STLLoader.js"></script>
+  <script type="module">
+    import * as THREE from "https://unpkg.com/three@0.160.0/build/three.module.js";
+    import { OrbitControls } from "https://unpkg.com/three@0.160.0/examples/jsm/controls/OrbitControls.js";
+    import { STLLoader } from "https://unpkg.com/three@0.160.0/examples/jsm/loaders/STLLoader.js";
 
-  <script>
-    (function(){
-      const $ = (id)=>document.getElementById(id);
+    const $ = (id) => document.getElementById(id);
 
-      // UI
-      const logEl = $("log");
-      function log(msg, color){
-        const d=document.createElement("div");
-        d.textContent=msg;
-        d.style.color=color||"rgba(224,230,237,.75)";
-        d.style.margin="0 0 6px 0";
-        logEl.appendChild(d);
-        logEl.scrollTop=logEl.scrollHeight;
-      }
-      function setDot(id, hex){
-        $(id).style.background = hex;
-      }
+    const logBox = $("log");
+    function log(msg, color="rgba(224,230,237,.8)"){
+      const d = document.createElement("div");
+      d.textContent = msg;
+      d.style.color = color;
+      logBox.appendChild(d);
+      logBox.scrollTop = logBox.scrollHeight;
+    }
 
-      // WebGL check
-      const webglOK = (function(){
-        try{
-          const c=document.createElement("canvas");
-          return !!(window.WebGLRenderingContext && (c.getContext("webgl")||c.getContext("experimental-webgl")));
-        }catch(e){ return false; }
-      })();
-      setDot("stWebgl", webglOK ? "#39ff14" : "#ff4757");
-      log(webglOK ? "WEBGL: OK" : "WEBGL: NO DISPONIBLE", webglOK ? "#39ff14" : "#ff4757");
+    const dotWebgl = $("dotWebgl");
+    const dotMax = $("dotMax");
+    const dotMan = $("dotMan");
+    const dotRx  = $("dotRx");
 
-      // DOM refs
-      const canvasHost = $("canvas3d");
-      const rxOverlay = $("rxOverlay");
-      const rxImg = $("rxImg");
+    // ====== THREE SETUP ======
+    const host = $("canvas3d");
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x05080a);
 
-      // Files
-      let stlMaxFile=null, stlManFile=null, rxFile=null;
+    const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 5000);
+    camera.position.set(0, 140, 260);
 
-      // 3D core
-      const scene = new THREE.Scene();
-      scene.background = new THREE.Color(0x000000);
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
+    renderer.shadowMap.enabled = false;
 
-      const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 4000);
-      camera.position.set(0, 70, 180);
+    host.appendChild(renderer.domElement);
 
-      const renderer = new THREE.WebGLRenderer({antialias:true, alpha:false});
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio||1, 2));
-      canvasHost.appendChild(renderer.domElement);
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.08;
+    controls.target.set(0, 40, 0);
 
-      const controls = new THREE.OrbitControls(camera, renderer.domElement);
-      controls.enableDamping = true;
-      controls.dampingFactor = 0.08;
+    // Lights
+    scene.add(new THREE.AmbientLight(0xffffff, 0.9));
+    const key = new THREE.DirectionalLight(0xffffff, 0.9);
+    key.position.set(200, 300, 200);
+    scene.add(key);
 
-      // Lights
-      scene.add(new THREE.AmbientLight(0xffffff, 0.9));
-      const key = new THREE.DirectionalLight(0x00d4ff, 1.2);
-      key.position.set(120, 140, 120);
-      scene.add(key);
+    // Helpers
+    const grid = new THREE.GridHelper(400, 20, 0x00d4ff, 0x0b1a22);
+    grid.material.opacity = 0.22;
+    grid.material.transparent = true;
+    scene.add(grid);
 
-      // Helpers (para que SIEMPRE veas algo aunque no cargues STL)
-      const grid = new THREE.GridHelper(240, 24, 0x00d4ff, 0x0a2a33);
-      grid.position.y = -18;
-      scene.add(grid);
+    const loader = new STLLoader();
+    let maxMesh = null, manMesh = null;
 
-      const axes = new THREE.AxesHelper(60);
-      scene.add(axes);
+    function setDot(el, ok){
+      el.className = "dot" + (ok ? " ok" : "");
+    }
 
-      // STL
-      const loader = new THREE.STLLoader();
-      let maxMesh=null, manMesh=null;
-      let simOn=false;
+    function resize(){
+      const w = host.clientWidth;
+      const h = host.clientHeight;
+      if (!w || !h) return;
+      renderer.setSize(w, h, false);
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+    }
+    const ro = new ResizeObserver(resize);
+    ro.observe(host);
+    window.addEventListener("resize", resize);
 
-      function disposeMesh(m){
-        if(!m) return;
-        scene.remove(m);
-        if(m.geometry) m.geometry.dispose();
-        if(m.material) m.material.dispose();
-      }
+    function centerAndFit(){
+      const box = new THREE.Box3();
+      let any = false;
+      if (maxMesh){ box.expandByObject(maxMesh); any = true; }
+      if (manMesh){ box.expandByObject(manMesh); any = true; }
+      if (!any){ log("Nada que enfocar (subí STL).", "rgba(255,255,255,.6)"); return; }
 
-      function centerAndScale(geom){
-        geom.computeVertexNormals();
-        geom.computeBoundingBox();
-        const box = geom.boundingBox;
-        const size = new THREE.Vector3();
-        box.getSize(size);
-        const maxDim = Math.max(size.x,size.y,size.z) || 1;
-        // Normaliza a tamaño clínico razonable visual (no cambia unidades, solo vista)
-        const scale = 120 / maxDim;
-        geom.translate(
-          -(box.min.x + size.x/2),
-          -(box.min.y + size.y/2),
-          -(box.min.z + size.z/2)
-        );
-        return scale;
-      }
+      const size = new THREE.Vector3();
+      const center = new THREE.Vector3();
+      box.getSize(size);
+      box.getCenter(center);
 
-      function loadSTL(file, type){
-        if(!file) return;
-        const r = new FileReader();
-        r.onload = (e)=>{
-          const geom = loader.parse(e.target.result);
-          const viewScale = centerAndScale(geom);
+      controls.target.copy(center);
 
-          const mat = new THREE.MeshPhongMaterial({
-            color: 0xeaeaea,
-            shininess: 90,
-            transparent: true,
-            opacity: 1
-          });
-          const mesh = new THREE.Mesh(geom, mat);
+      const maxDim = Math.max(size.x, size.y, size.z);
+      const fov = camera.fov * (Math.PI / 180);
+      let dist = maxDim / (2 * Math.tan(fov / 2));
+      dist *= 1.35;
 
-          // Orientación estándar (muchos STL vienen "parados")
-          mesh.rotation.x = -Math.PI/2;
-          mesh.scale.setScalar(viewScale);
+      camera.position.set(center.x, center.y + dist * 0.35, center.z + dist);
+      camera.near = Math.max(0.1, dist / 200);
+      camera.far = dist * 20;
+      camera.updateProjectionMatrix();
 
-          if(type==="max"){
-            disposeMesh(maxMesh);
-            maxMesh = mesh;
-            maxMesh.position.y = 18;
-            stlMaxFile = file;
-            setDot("stMax", "#39ff14");
-            log("STL MAX cargado: " + file.name, "#00d4ff");
-          }else{
-            disposeMesh(manMesh);
-            manMesh = mesh;
-            manMesh.position.y = -18;
-            stlManFile = file;
-            setDot("stMan", "#39ff14");
-            log("STL MAN cargado: " + file.name, "#00d4ff");
-          }
+      log("Vista enfocada / Fit view.", "rgba(0,212,255,.95)");
+    }
 
-          scene.add(mesh);
-          fitView();
-        };
-        r.readAsArrayBuffer(file);
+    function clearMesh(mesh){
+      if (!mesh) return;
+      scene.remove(mesh);
+      mesh.geometry?.dispose?.();
+      mesh.material?.dispose?.();
+    }
+
+    function materialFor(type){
+      // max = ligeramente cyan, man = ligeramente verde
+      const color = (type === "max") ? 0xeef6ff : 0xf0fff0;
+      return new THREE.MeshStandardMaterial({
+        color,
+        metalness: 0.12,
+        roughness: 0.55
+      });
+    }
+
+    async function loadSTL(file, type){
+      if (!file) return;
+      const buf = await file.arrayBuffer();
+      const geom = loader.parse(buf);
+      geom.computeVertexNormals();
+
+      const mesh = new THREE.Mesh(geom, materialFor(type));
+      mesh.rotation.x = -Math.PI / 2;
+
+      if (type === "max"){
+        clearMesh(maxMesh);
+        maxMesh = mesh;
+        mesh.position.y = 60;
+        setDot(dotMax, true);
+      } else {
+        clearMesh(manMesh);
+        manMesh = mesh;
+        mesh.position.y = 10;
+        setDot(dotMan, true);
       }
 
-      function fitView(){
-        // Encaja cámara a ambos modelos o a helpers si no hay STL
-        const box = new THREE.Box3();
-        let has=false;
+      scene.add(mesh);
+      log(`${type.toUpperCase()} cargada: ${file.name}`, "rgba(57,255,20,.95)");
+      centerAndFit();
+    }
 
-        if(maxMesh){ box.expandByObject(maxMesh); has=true; }
-        if(manMesh){ box.expandByObject(manMesh); has=true; }
+    // ====== UI HOOKS ======
+    $("btnMax").onclick = () => $("inMax").click();
+    $("btnMan").onclick = () => $("inMan").click();
 
-        if(!has){
-          // fallback: grid/axes
-          box.setFromCenterAndSize(new THREE.Vector3(0,0,0), new THREE.Vector3(180,120,180));
-        }
+    $("inMax").addEventListener("change", (e)=> loadSTL(e.target.files?.[0], "max"));
+    $("inMan").addEventListener("change", (e)=> loadSTL(e.target.files?.[0], "man"));
 
-        const size = new THREE.Vector3(); box.getSize(size);
-        const center = new THREE.Vector3(); box.getCenter(center);
+    $("btnFit").onclick = centerAndFit;
 
-        controls.target.copy(center);
-        controls.update();
+    $("btnReset").onclick = () => {
+      clearMesh(maxMesh); clearMesh(manMesh);
+      maxMesh = null; manMesh = null;
+      setDot(dotMax, false); setDot(dotMan, false);
+      controls.target.set(0,40,0);
+      camera.position.set(0,140,260);
+      camera.updateProjectionMatrix();
+      log("Reset 3D listo.", "rgba(255,255,255,.65)");
+    };
 
-        const maxDim = Math.max(size.x,size.y,size.z) || 1;
-        const fov = camera.fov * (Math.PI/180);
-        let dist = (maxDim/2) / Math.tan(fov/2);
-        dist *= 1.35;
-
-        camera.position.set(center.x, center.y + maxDim*0.25, center.z + dist);
-        camera.near = Math.max(0.1, dist/100);
-        camera.far  = Math.max(2000, dist*10);
-        camera.updateProjectionMatrix();
+    $("btnSim").onclick = () => {
+      // demo simple: separar un poco max/mandíbula
+      if (!maxMesh && !manMesh){
+        log("Subí STL antes de simular.", "rgba(255,120,120,.95)");
+        return;
       }
+      if (maxMesh) maxMesh.position.x += 2.0;
+      if (manMesh) manMesh.position.x -= 2.0;
+      log("Simulación demo aplicada (+/- 2mm en X).", "rgba(57,255,20,.95)");
+    };
 
-      function reset3D(){
-        simOn=false;
-        if(maxMesh){
-          maxMesh.material.color.setHex(0xeaeaea);
-          maxMesh.position.y = 18;
-          maxMesh.scale.set(maxMesh.scale.x, maxMesh.scale.y, maxMesh.scale.z);
-        }
-        if(manMesh){
-          manMesh.material.color.setHex(0xeaeaea);
-          manMesh.position.y = -18;
-          manMesh.scale.set(manMesh.scale.x, manMesh.scale.y, manMesh.scale.z);
-        }
-        log("RESET 3D", "#8fa0b3");
-        fitView();
-      }
+    // RX overlay
+    const rxOverlay = $("rxOverlay");
+    const rxImg = $("rxImg");
 
-      function simulate(){
-        if(!maxMesh || !manMesh){
-          alert("Primero carga MAXILA y MANDÍBULA (.stl).");
-          return;
-        }
-        simOn = !simOn;
-        const mul = simOn ? 1.03 : 1.00;
-        const gap = simOn ? 10 : 36;
+    $("btnRx").onclick = () => $("inRx").click();
 
-        maxMesh.scale.multiplyScalar(mul / maxMesh.scale.x * maxMesh.scale.x); // no-op safe
-        manMesh.scale.multiplyScalar(mul / manMesh.scale.x * manMesh.scale.x);
-
-        // Más simple y estable: set absoluto sobre escala actual base (viewScale ya aplicado)
-        const sMax = maxMesh.scale.clone();
-        const sMan = manMesh.scale.clone();
-        const baseMax = sMax.multiplyScalar(simOn ? 1.03 : (1/1.03));
-        const baseMan = sMan.multiplyScalar(simOn ? 1.03 : (1/1.03));
-        maxMesh.scale.copy(baseMax);
-        manMesh.scale.copy(baseMan);
-
-        maxMesh.position.y = gap/2;
-        manMesh.position.y = -gap/2;
-
-        maxMesh.material.color.setHex(simOn ? 0x39ff14 : 0xeaeaea);
-
-        log("Simulación expansión: " + (simOn ? "ON" : "OFF"), simOn ? "#39ff14" : "#8fa0b3");
-      }
-
-      // RX
-      function readAsDataURL(file){
-        return new Promise((res, rej)=>{
-          const rr=new FileReader();
-          rr.onload=()=>res(rr.result);
-          rr.onerror=rej;
-          rr.readAsDataURL(file);
-        });
-      }
-
-      async function loadRX(file){
-        if(!file) return;
-        rxFile = file;
-        rxImg.src = await readAsDataURL(file);
-        setDot("stRx", "#39ff14");
-        log("RX cargada: " + file.name, "#00d4ff");
-      }
-
-      function openRX(){
-        if(!rxImg.src){
-          alert("Sube una RX primero.");
-          return;
-        }
-        rxOverlay.style.display="flex";
-      }
-      function closeRX(){ rxOverlay.style.display="none"; }
-
-      // Resize
-      function resize(){
-        const w = canvasHost.clientWidth || window.innerWidth;
-        const h = canvasHost.clientHeight || window.innerHeight;
-        renderer.setSize(w, h, false);
-        camera.aspect = w / h;
-        camera.updateProjectionMatrix();
-      }
-      window.addEventListener("resize", ()=>{ resize(); requestAnimationFrame(fitView); });
-
-      // Wire UI
-      $("btnMax").onclick = ()=>$("inMax").click();
-      $("btnMan").onclick = ()=>$("inMan").click();
-      $("btnRx").onclick  = ()=>$("inRx").click();
-
-      $("inMax").addEventListener("change", (e)=> loadSTL(e.target.files[0], "max"));
-      $("inMan").addEventListener("change", (e)=> loadSTL(e.target.files[0], "man"));
-      $("inRx").addEventListener("change",  (e)=> loadRX(e.target.files[0]));
-
-      $("btnSim").onclick = simulate;
-      $("btnFit").onclick = fitView;
-      $("btnReset").onclick = reset3D;
-
-      $("btnOpenRx").onclick = openRX;
-      $("btnCloseRx").onclick = closeRX;
-      window.addEventListener("keydown", (e)=>{ if(e.key==="Escape") closeRX(); });
-
-      // Send
-      $("btnSend").onclick = ()=>{
-        const notes = $("notes").value.trim();
-        const checklist = [
-          `STL MAX: ${stlMaxFile ? "✅" : "❌"}`,
-          `STL MAN: ${stlManFile ? "✅" : "❌"}`,
-          `RX: ${rxFile ? "✅" : "❌"}`
-        ].join("\n");
-
-        const body =
-`ORDEN FRACTAL LABS — Caso nuevo
-
-CHECKLIST:
-${checklist}
-
-NOTAS:
-${notes || "—"}
-
-LINK PARA SUBIR ARCHIVOS (Smash):
-https://fromsmash.com/
-`;
-
-        const subj = "Nuevo Caso Dental (Fractal Labs)";
-        window.location.href = "mailto:produccion@fractallabs.com?subject=" + encodeURIComponent(subj) + "&body=" + encodeURIComponent(body);
+    $("inRx").addEventListener("change", (e)=>{
+      const f = e.target.files?.[0];
+      if (!f) return;
+      const r = new FileReader();
+      r.onload = () => {
+        rxImg.src = r.result;
+        setDot(dotRx, true);
+        log(`RX lista: ${f.name}`, "rgba(0,212,255,.95)");
       };
+      r.readAsDataURL(f);
+    });
 
-      // First paint
-      function animate(){
-        requestAnimationFrame(animate);
-        controls.update();
-        renderer.render(scene, camera);
+    $("btnOpenRx").onclick = () => {
+      if (!rxImg.src){
+        log("Primero subí una RX.", "rgba(255,120,120,.95)");
+        return;
       }
-      resize();
-      fitView();
-      animate();
+      rxOverlay.style.display = "flex";
+    };
 
-      log("STATUS: listo. Carga STL y RX.", "#39ff14");
-    })();
+    $("rxClose").onclick = () => rxOverlay.style.display = "none";
+    window.addEventListener("keydown", (ev)=>{
+      if (ev.key === "Escape") rxOverlay.style.display = "none";
+    });
+
+    $("btnSend").onclick = () => {
+      const txt = $("notes").value.trim();
+      log("Envío a producción (demo).", "rgba(255,0,255,.95)");
+      if (txt) log("Notas: " + txt, "rgba(255,0,255,.75)");
+    };
+
+    // ====== WebGL check ======
+    try{
+      const gl = renderer.getContext();
+      if (gl) setDot(dotWebgl, true);
+      log("WEBGL OK", "rgba(57,255,20,.95)");
+    }catch(err){
+      setDot(dotWebgl, false);
+      log("WEBGL FALLÓ: " + err?.message, "rgba(255,120,120,.95)");
+    }
+
+    // Render loop
+    function tick(){
+      controls.update();
+      renderer.render(scene, camera);
+      requestAnimationFrame(tick);
+    }
+    resize();
+    tick();
   </script>
 </body>
 </html>
