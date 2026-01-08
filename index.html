@@ -3,43 +3,36 @@
 <head>
   <meta charset="UTF-8" />
   <title>Fractal Labs | Panel 3D</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
-    html, body {
+    body {
       margin: 0;
-      height: 100%;
       background: #05080a;
       color: #e0e6ed;
       font-family: system-ui, Arial, sans-serif;
       overflow: hidden;
     }
-
     #wrap {
       display: flex;
-      height: 100%;
+      height: 100vh;
     }
-
     #ui {
       width: 320px;
+      padding: 20px;
       background: #0a0f14;
-      padding: 16px;
       box-sizing: border-box;
     }
-
     button {
       width: 100%;
-      margin: 6px 0;
+      margin: 8px 0;
       padding: 10px;
-      background: #111;
-      color: #39ff14;
+      background: #0e151b;
       border: 1px solid #39ff14;
+      color: #39ff14;
       cursor: pointer;
     }
-
     #viewer {
       flex: 1;
     }
-
     canvas {
       display: block;
     }
@@ -49,16 +42,17 @@
 <body>
   <div id="wrap">
     <div id="ui">
-      <h3>FRACTAL LABS</h3>
-      <button id="btnMax">MAXILA</button>
-      <button id="btnMan">MANDÍBULA</button>
-      <button id="btnExpand">SIMULAR EXPANSIÓN</button>
-      <button id="btnReset">RESET 3D</button>
+      <h2>FRACTAL LABS</h2>
+      <button id="maxila">MAXILA</button>
+      <button id="mandibula">MANDÍBULA</button>
+      <button id="expand">SIMULAR EXPANSIÓN</button>
+      <button id="reset">RESET 3D</button>
+      <p style="opacity:.5;font-size:12px">BUILD: CDN-THREE ✅</p>
     </div>
     <div id="viewer"></div>
   </div>
 
-  <!-- THREE.JS DESDE CDN (ES MODULE) -->
+  <!-- 🔥 ÚNICO SCRIPT (CDN) -->
   <script type="module">
     import * as THREE from "https://unpkg.com/three@0.158.0/build/three.module.js";
     import { OrbitControls } from "https://unpkg.com/three@0.158.0/examples/jsm/controls/OrbitControls.js";
@@ -79,31 +73,25 @@
     light.position.set(5, 5, 5);
     scene.add(light);
 
-    const geo = new THREE.BoxGeometry(1, 1, 1);
-    const mat = new THREE.MeshStandardMaterial({ color: 0x00d4ff });
-    let mesh = new THREE.Mesh(geo, mat);
+    const mesh = new THREE.Mesh(
+      new THREE.BoxGeometry(1, 1, 1),
+      new THREE.MeshStandardMaterial({ color: 0x39ff14 })
+    );
     scene.add(mesh);
-
-    document.getElementById("btnExpand").onclick = () => {
-      mesh.scale.x = 1.3;
-    };
-
-    document.getElementById("btnReset").onclick = () => {
-      mesh.scale.set(1,1,1);
-    };
 
     function animate() {
       requestAnimationFrame(animate);
+      mesh.rotation.y += 0.01;
       renderer.render(scene, camera);
     }
-
     animate();
 
-    window.addEventListener("resize", () => {
-      camera.aspect = (window.innerWidth - 320) / window.innerHeight;
-      camera.updateProjectionMatrix();
-      renderer.setSize(window.innerWidth - 320, window.innerHeight);
-    });
+    document.getElementById("expand").onclick = () => {
+      mesh.scale.x += 0.1;
+    };
+    document.getElementById("reset").onclick = () => {
+      mesh.scale.set(1, 1, 1);
+    };
   </script>
 </body>
 </html>
